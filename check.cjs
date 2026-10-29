@@ -1,0 +1,10 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+let nodes={}; const el=()=>({innerHTML:'',textContent:'',classList:{toggle(){}},addEventListener(){},showModal(){},close(){},scrollIntoView(){}});
+const storage={};const ctx={document:{querySelector:s=>nodes[s]??=el(),querySelectorAll:()=>[]},localStorage:{getItem:k=>storage[k],setItem:(k,v)=>storage[k]=v},window:{print(){}}};
+vm.createContext(ctx);vm.runInContext(fs.readFileSync('dist/app.js','utf8'),ctx);
+assert.equal(nodes['#lessonGrid'].innerHTML.split('class="lesson"').length-1,4);
+vm.runInContext('select(2);openLesson(3)',ctx);assert(nodes['#modalBody'].innerHTML.includes('puntos importantes'));
+nodes['#complete'].onclick();assert.equal(JSON.parse(storage['padelx-done']).length,1);
+nodes['#progressBtn'].onclick();assert(nodes['#modalBody'].innerHTML.includes('1 de 12'));
+nodes['#planBtn'].onclick();assert(nodes['#modalBody'].innerHTML.includes('45 minutos'));
+console.log('OK: niveles, lecciones, progreso persistente y plan de entrenamiento');
