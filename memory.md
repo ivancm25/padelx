@@ -78,3 +78,51 @@ Revisar el plan tras cada piloto. Priorizar la fase siguiente por evidencia de u
 - [W3C, WCAG 2.2](https://www.w3.org/TR/WCAG22/): referencia para accesibilidad web.
 - [AEPD, protección de datos por defecto](https://www.aepd.es/derechos-y-deberes/cumple-tus-deberes/medidas-de-cumplimiento/proteccion-de-datos-por-defecto) y [guía de cookies](https://www.aepd.es/es/documento/guia-cookies.pdf): referencia inicial de privacidad; revisar requisitos concretos antes de recoger datos o activar analítica.
 - [OWASP ASVS](https://asvs.owasp.org/): marco para verificar seguridad al añadir cuentas, pagos o datos compartidos.
+
+
+## Entrega implementada · Rutas y sesiones en pista (30/10/2026)
+
+### Alcance acordado con Iván
+
+Convertir la biblioteca existente en un recorrido: elegir objetivo → consultar las lecciones relacionadas → preparar sesión → entrenar con modo pista → anotar qué repetir. Esta entrega no incorpora cuentas, pagos, IA conectada ni servicios de entrenador.
+
+- Cuatro rutas: primer partido, defensa de pared, construcción en red y coordinación de pareja. Enlazan lecciones existentes y reflejan su progreso local; completarlas no acredita dominio técnico.
+- Planificador determinista de 20, 40 o 60 minutos, nivel base/desarrollo/profundización y 1, 2 o 4 jugadores. Duración repartida entre activación, práctica con descansos, aplicación y reflexión. En solitario se adapta a preparación y lectura; con dos personas se evita simular coordinación real de dobles.
+- Modo pista con instrucciones grandes, alternativa fácil, cronómetro por bloque, pausa, descanso de 60 segundos y contador manual de repeticiones. El avance de bloque es manual; no registra tiempo real de entrenamiento.
+- Recuperación de sesión en pausa tras recargar, descarte explícito y protección ante sustitución accidental de una sesión abierta.
+- Cierre con sensación y nota de hasta 240 caracteres. Conserva hasta 30 sesiones en este navegador y muestra las cinco últimas. No hay sincronización entre dispositivos.
+- Impresión del plan, navegación con teclado y diseño adaptable a móvil.
+
+### Archivos y coordinación para el compañero y su IA
+
+Implementación añadida en dist/training.js y dist/training.css; dist/index.html carga ambos después de los módulos existentes. La biblioteca y sus animaciones siguen en academy.js. Las comprobaciones de esta entrega están en check-training.cjs y las anteriores en check.cjs.
+
+Claves de almacenamiento nuevas: padelx-plan-settings, padelx-active-session y padelx-training-history. Se conservan padelx-done y padelx-practices. No renombrar o borrar claves compartidas sin migración. El generador y la validación de recuperación se exponen en window.PadelTraining para comprobación automática.
+
+Antes de editar o subir: leer AGENTS.md, consultar main y las ramas remotas, revisar los cambios del otro colaborador y preservar el historial. GitHub es la fuente compartida; el remoto de Sites es independiente. Si fetch falla, consultar la API de GitHub y verificar los archivos por su SHA. No afirmar que un despliegue está publicado sin resultado succeeded de Sites.
+
+### Criterios de aceptación
+
+1. Las cuatro rutas abren las lecciones correctas y reflejan sus marcas de progreso.
+2. Todas las combinaciones admitidas de objetivo, tiempo, jugadores y nivel generan bloques positivos que suman exactamente el tiempo elegido; las entradas inválidas se rechazan.
+3. Una persona no recibe ejercicios que necesitan alimentador; las adaptaciones de dos y cuatro jugadores se explican.
+4. Pausar, descansar, finalizar bloque, anotar y recuperar tras recarga funcionan; el reloj no acumula retrasos por contar intervalos y nunca avanza automáticamente al siguiente ejercicio.
+5. Datos locales dañados y almacenamiento bloqueado no rompen la página; los fallos de guardado se muestran y las notas se conservan para reintentar.
+6. Pasan node --check en los archivos JavaScript, node check.cjs y node check-training.cjs. Revisar móvil y escritorio cuando el navegador esté disponible; registrar cualquier límite de verificación.
+
+### Estado y publicación
+
+Implementación terminada y preparada para revisión mediante una rama/PR. Verificaciones realizadas: sintaxis de los cuatro scripts, node check.cjs y node check-training.cjs. Pasan 108 combinaciones del planificador y comprobaciones de rutas, entradas inválidas, reloj, pausas, descanso, recuperación, repeticiones, cierre, almacenamiento bloqueado, escape de notas y descarte. No se ha realizado revisión visual en navegador en esta sesión: no hay herramienta de navegador disponible. El despliegue anterior de Sites sigue en versión 1 al empezar esta entrega. No confundir los merges en GitHub con una publicación. Bloqueo observado: Git en el ejecutor Windows devuelve getaddrinfo() thread failed to start al conectar con GitHub y con el remoto de Sites. Reintentar el flujo oficial con credencial renovada, diagnosticar el error concreto y mantener los permisos de acceso existentes. Diagnóstico adicional de esta sesión: curl no resuelve github.com; Resolve-DnsName devuelve «Acceso denegado» y la resolución DNS de .NET falla también. El fallo no es exclusivo de Git ni de la aplicación. La sesión tiene acceso de red restringido y no puede cambiar sus permisos desde el código del proyecto. No se ha publicado esta entrega; completar sincronización y publicación desde una sesión con conectividad autorizada. No desactivar TLS, cambiar accesos del Site ni reescribir historial para sortearlo.
+
+### Propuestas para las siguientes entregas (pendientes, no implementadas)
+
+Prioridad inmediata tras probar esta versión con jugadores:
+
+- Exportar/importar los datos personales para poder conservarlos y trasladarlos de dispositivo.
+- Favoritos y próxima práctica: guardar una selección de ejercicios con un objetivo.
+- Comparar sesiones del mismo ejercicio, separando dificultad y tipo de alimentación; evitar indicadores que confundan volumen con aprendizaje.
+- Entrada por problema: «mis globos se quedan cortos» → explicación y ejercicio revisados. Puede empezar con reglas explícitas sin IA.
+- Pizarra táctica interactiva y situaciones «decide el siguiente golpe», con explicación contextual revisada por entrenador.
+- Mejorar impresión, uso sin conexión y acceso desde móvil tras medir el rendimiento de las imágenes.
+
+Después, solo si existe necesidad demostrada: cuenta y sincronización, plan semanal, vídeos reales revisados, revisión humana por entrenador, reservas y modelo de pago. No simular servicios, disponibilidad o correcciones biomecánicas automáticas.
