@@ -153,3 +153,5 @@ Implementación terminada. Pasan la sintaxis de los cinco scripts, check.cjs, ch
 ### Próximas propuestas pendientes
 
 Comparación de sesiones equivalentes y tendencias por ejercicio; selección de ejercicios para una próxima práctica personalizada; entrada por problema con reglas explícitas; pizarra táctica y casos de decisión revisados por entrenador. Después, según pruebas con usuarios: uso sin conexión, cuentas y sincronización. Esta entrega no incorpora estas propuestas.
+
+Seguimiento de esta entrega: https://github.com/ivancm25/padelx/pull/6. Consultar el estado de la PR para saber si está integrada; la publicación en Sites es independiente y continúa bloqueada en esta sesión.

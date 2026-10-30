@@ -79,7 +79,7 @@
     const saved=favorites();
     $('#favoriteList').innerHTML=saved.length?saved.map(id=>{const item=catalog.find(x=>x.id===id);return `<article class="favorite-item"><img src="${item.image}" alt="" loading="lazy" width="1200" height="800"><div><button type="button" data-open-favorite="${id}">${escape(item.title)} ↗</button><small>${item.type==='core'?'Lección de la ruta':'Clase de biblioteca'}</small><button class="quiet-button" type="button" data-remove-favorite="${id}" aria-label="Quitar ${escape(item.title)} de favoritos">Quitar de favoritos</button></div></article>`;}).join(''):'<p class="empty-favorites">Aquí aparecerán las lecciones a las que quieras volver.</p>';
     document.querySelectorAll('[data-open-favorite]').forEach(button=>button.onclick=()=>{const item=catalog.find(x=>x.id===button.dataset.openFavorite);if(item.type==='core'){select(item.level);openLesson(item.index);}else openClass(item.index);});
-    document.querySelectorAll('[data-remove-favorite]').forEach(button=>button.onclick=()=>{if(toggleFavorite(button.dataset.removeFavorite))$('#exportBackup').focus();});
+    document.querySelectorAll('[data-remove-favorite]').forEach(button=>button.onclick=()=>{if(toggleFavorite(button.dataset.removeFavorite)){const list=$('#favoriteList');list.setAttribute('tabindex','-1');list.focus();}});
     let last;try{last=window.PadelTraining.validHistory(JSON.parse(localStorage.getItem(keys.sessions)||'[]')).slice(-1)[0];}catch{}
     $('#repeatDescription').textContent=last?`${window.PadelTraining.goals.find(g=>g.id===last.goal).title} · ${last.minutes} min · ${last.players} jugador${last.players===1?'':'es'}. Puedes ajustar el plan antes de comenzar.`:'Termina y guarda una sesión para volver a cargar aquí su objetivo, duración, nivel y jugadores.';
     $('#repeatTraining').disabled=!last;
@@ -88,7 +88,7 @@
   function toggleFavorite(id){
     if(!ids.has(id))return false;
     const saved=favorites(),next=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];
-    try{localStorage.setItem(keys.favorites,JSON.stringify(next));refresh();return true;}catch{const status=$('#favoriteStatus')||$('#backupStatus');status.textContent='No se pudo guardar el cambio. Tus favoritos anteriores se conservan.';return false;}
+    try{localStorage.setItem(keys.favorites,JSON.stringify(next));refresh();return true;}catch{const status=(modal.open&&$('#favoriteStatus'))||$('#backupStatus');status.textContent='No se pudo guardar el cambio. Tus favoritos anteriores se conservan.';return false;}
   }
   function decorate(id){
     $('#modalBody').insertAdjacentHTML('beforeend','<div class="favorite-action"><button class="quiet-button" id="favoriteLesson" type="button"></button><p id="favoriteStatus" role="status"></p></div>');
