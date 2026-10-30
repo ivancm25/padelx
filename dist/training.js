@@ -77,6 +77,12 @@
   function renderHistory(){
     const entries=validHistory(load('padelx-training-history',[]));
     $('#trainingHistory').innerHTML=entries.length?entries.slice().reverse().slice(0,5).map(x=>`<article class="history-entry"><strong>${goals.find(g=>g.id===x.goal).title}</strong><span>${escape(new Date(x.at).toLocaleDateString('es-ES'))} · Plan de ${x.minutes} min · ${x.players} jugador${x.players===1?'':'es'}</span><p>${({repetir:'Quiero repetir',mejor:'Me he sentido con más control',dificil:'Necesito simplificar'})[x.feeling]}${x.note?' · '+escape(x.note):''}</p></article>`).join(''):'<p>Tu primera sesión empieza con un objetivo. Al terminar podrás guardar qué quieres repetir.</p>';
+    window.PadelProgress?.refresh();
+  }
+  function prepare(settings){
+    if(session){$('#planError').textContent='Tienes una sesión en curso. Termínala o descártala antes de preparar otra.';practice.scrollIntoView({behavior:'smooth'});return false;}
+    try{const plan=buildPlan(settings);for(const [name,value] of Object.entries(plan.settings)){if(name==='minutes')$(`#trainingForm input[value="${value}"]`).checked=true;else $(`#trainingForm [name="${name}"]`).value=value;}save('padelx-plan-settings',plan.settings);renderPlan(plan);$('#planError').textContent='Plan cargado. Puedes ajustarlo antes de abrir el modo pista.';practice.scrollIntoView({behavior:'smooth'});$('#trainingGoal').focus({preventScroll:true});return true;}
+    catch{$('#planError').textContent='No se pudo cargar este plan. Prepara una nueva sesión.';return false;}
   }
   function renderPlan(plan){
     $('#planResult').innerHTML=`<span class="eyebrow">SESIÓN PROPUESTA</span><h3>${plan.title}</h3><p>${plan.settings.minutes} minutos · ${plan.settings.players} jugador${plan.settings.players===1?'':'es'} · ${['Base','Desarrollo','Profundizar'][plan.settings.level]}</p><ol class="plan-blocks">${plan.blocks.map(b=>`<li><span>${b.minutes} min</span><div><strong>${b.title}</strong><p>${b.instruction}</p></div></li>`).join('')}</ol><p class="form-help">Adapta la intensidad y detente ante dolor. El cronómetro avisa al finalizar cada bloque; tú decides cuándo avanzar.</p><button class="primary" id="startCourt" type="button">${session?'Volver a la sesión':'Abrir modo pista'} ↗</button><button class="quiet-button" id="printPlan" type="button">Imprimir plan</button>`;
@@ -111,5 +117,5 @@
   window.addEventListener('pagehide',()=>{if(session?.running)tick();stopTimer();stopRest();persist();});
   window.addEventListener('pageshow',()=>{if(session)renderCourt();});
   // API de lógica pura compartida con las comprobaciones del repositorio.
-  window.PadelTraining={buildPlan,restore,validHistory,goals};
+  window.PadelTraining={buildPlan,restore,validHistory,goals,prepare,refresh(){renderRoutes();renderHistory();}};
 })();
