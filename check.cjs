@@ -1,10 +1,25 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 let nodes={}; const el=()=>({innerHTML:'',textContent:'',classList:{toggle(){}},addEventListener(){},showModal(){},close(){},scrollIntoView(){}});
 const storage={};const ctx={document:{querySelector:s=>nodes[s]??=el(),querySelectorAll:()=>[]},localStorage:{getItem:k=>storage[k],setItem:(k,v)=>storage[k]=v},window:{print(){}}};
-vm.createContext(ctx);vm.runInContext(fs.readFileSync('dist/app.js','utf8'),ctx);
+vm.createContext(ctx);vm.runInContext(fs.readFileSync('dist/lesson-visuals.js','utf8'),ctx);vm.runInContext(fs.readFileSync('dist/app.js','utf8'),ctx);
+const visuals=vm.runInContext('lessonVisuals',ctx);
+assert.equal(visuals.core.length+visuals.library.length,27);
+for(const visual of [...visuals.core,...visuals.library])assert(fs.existsSync('dist/'+visual.src),`Falta ${visual.src}`);
 assert.equal(nodes['#lessonGrid'].innerHTML.split('class="lesson"').length-1,4);
 vm.runInContext('select(2);openLesson(3)',ctx);assert(nodes['#modalBody'].innerHTML.includes('puntos importantes'));
 nodes['#complete'].onclick();assert.equal(JSON.parse(storage['padelx-done']).length,1);
 nodes['#progressBtn'].onclick();assert(nodes['#modalBody'].innerHTML.includes('1 de 12'));
 nodes['#planBtn'].onclick();assert(nodes['#modalBody'].innerHTML.includes('45 minutos'));
 console.log('OK: niveles, lecciones, progreso persistente y plan de entrenamiento');
+
+const brokenNodes={},brokenStorage={'padelx-done':'["0-0","0-0","desconocida"]','padelx-practices':'{}'};
+const brokenEl=()=>({...el(),value:'',before(){},insertAdjacentHTML(){}});
+const brokenCtx={document:{querySelector:s=>brokenNodes[s]??=Object.assign(brokenEl(),{value:s==='#filterLevel'?'all':s==='#filterCat'?'Todas las familias':''}),querySelectorAll:()=>[],createElement:brokenEl},localStorage:{getItem:k=>brokenStorage[k],setItem:(k,v)=>brokenStorage[k]=v},window:{print(){}}};
+vm.createContext(brokenCtx);
+vm.runInContext(fs.readFileSync('dist/lesson-visuals.js','utf8'),brokenCtx);
+vm.runInContext(fs.readFileSync('dist/app.js','utf8'),brokenCtx);
+assert.equal(brokenNodes['#count'].textContent,1,'El progreso duplicado o desconocido se descarta');
+vm.runInContext(fs.readFileSync('dist/academy.js','utf8'),brokenCtx);
+assert.equal(brokenNodes['#practiceHistory'].textContent,'','Un historial con formato incorrecto no rompe la página');
+assert.equal(vm.runInContext('getLogs().length',brokenCtx),0);
+console.log('OK: datos locales dañados no rompen progreso ni historial');
