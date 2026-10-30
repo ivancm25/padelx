@@ -45,3 +45,8 @@ Incluye 12 lecciones iniciales y 15 fichas técnicas adicionales, filtros, anima
 ## Desplegar
 
 GitHub guarda el código compartido. Subir cambios aquí no actualiza automáticamente el sitio de Sites. La publicación usa el flujo de Sites y su repositorio de fuente independiente. La configuración del despliegue se mantiene fuera de este repositorio público. Sincroniza primero los cambios de GitHub.
+
+
+## Rutas y entrenamiento guiado
+
+Cuatro rutas por objetivos, sesiones de 20/40/60 minutos para 1/2/4 jugadores y modo pista con temporizador, pausas, repeticiones y notas locales. El plan no mide el tiempo real de entrenamiento ni acredita un nivel. Código en `dist/training.js` y `dist/training.css`. Ejecuta también `node --check dist/training.js` y `node check-training.cjs`. El alcance, criterios de aceptación y siguientes propuestas se mantienen en `memory.md`.
