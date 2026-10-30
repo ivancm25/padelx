@@ -50,3 +50,8 @@ GitHub guarda el código compartido. Subir cambios aquí no actualiza automátic
 ## Rutas y entrenamiento guiado
 
 Cuatro rutas por objetivos, sesiones de 20/40/60 minutos para 1/2/4 jugadores y modo pista con temporizador, pausas, repeticiones y notas locales. El plan no mide el tiempo real de entrenamiento ni acredita un nivel. Código en `dist/training.js` y `dist/training.css`. Ejecuta también `node --check dist/training.js` y `node check-training.cjs`. El alcance, criterios de aceptación y siguientes propuestas se mantienen en `memory.md`.
+
+
+## Datos portables y favoritos
+
+Mi espacio permite guardar las 27 lecciones, descargar una copia JSON y combinarla en otro navegador con vista previa. Conserva la sesión en curso local y permite cargar el plan de la última sesión terminada. El formato v1 y la coordinación entre colaboradores se documentan en memory.md. Ejecuta también `node --check dist/progress.js` y `node check-progress.cjs`.

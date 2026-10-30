@@ -1,10 +1,10 @@
 # PadelX · memoria y plan de lanzamiento
 
-Actualizado: 29/10/2026. Documento vivo para decidir, construir y comprobar cada fase. Este plan propone prioridades; ninguna función futura se presenta como disponible hoy.
+Actualizado: 30/10/2026. Documento vivo para decidir, construir y comprobar cada fase. Este plan propone prioridades; ninguna función futura se presenta como disponible hoy.
 
 ## Punto de partida y objetivo
 
-La web actual es estática: 12 lecciones iniciales, 15 fichas técnicas, filtros, animaciones conceptuales y prácticas guardadas en `localStorage`. No hay cuentas, sincronización entre dispositivos, reservas, pagos ni vídeos profesionales. Las fichas necesitan revisión de un entrenador antes de venderse como formación técnica. El objetivo inicial es ayudar a jugadores recreativos hispanohablantes a entender una situación de juego, practicarla en pista y comprobar si mejoran; la propuesta comercial se validará con usuarios antes de construir funciones costosas.
+El código actual es estático: 12 lecciones iniciales, 15 fichas técnicas, filtros, animaciones conceptuales, rutas por objetivos, planificador y modo pista. El progreso, prácticas, sesiones y favoritos se guardan en localStorage y pueden trasladarse mediante copias JSON. La disponibilidad en producción depende del estado de publicación indicado en cada entrega. No hay cuentas, sincronización entre dispositivos, reservas, pagos ni vídeos profesionales. Las fichas necesitan revisión de un entrenador antes de venderse como formación técnica. El objetivo inicial es ayudar a jugadores recreativos hispanohablantes a entender una situación de juego, practicarla en pista y comprobar si mejoran; la propuesta comercial se validará con usuarios antes de construir funciones costosas.
 
 ## Principios de producto
 
@@ -118,11 +118,38 @@ Implementación integrada en main mediante la PR #5: https://github.com/ivancm25
 
 Prioridad inmediata tras probar esta versión con jugadores:
 
-- Exportar/importar los datos personales para poder conservarlos y trasladarlos de dispositivo.
-- Favoritos y próxima práctica: guardar una selección de ejercicios con un objetivo.
+- [x] Exportar/importar los datos personales: implementado en la entrega de datos portables descrita más abajo.
+- [x] Favoritos y próxima práctica: implementados los favoritos de lecciones y la carga de la última sesión; la selección personalizada de varios ejercicios sigue pendiente.
 - Comparar sesiones del mismo ejercicio, separando dificultad y tipo de alimentación; evitar indicadores que confundan volumen con aprendizaje.
 - Entrada por problema: «mis globos se quedan cortos» → explicación y ejercicio revisados. Puede empezar con reglas explícitas sin IA.
 - Pizarra táctica interactiva y situaciones «decide el siguiente golpe», con explicación contextual revisada por entrenador.
 - Mejorar impresión, uso sin conexión y acceso desde móvil tras medir el rendimiento de las imágenes.
 
 Después, solo si existe necesidad demostrada: cuenta y sincronización, plan semanal, vídeos reales revisados, revisión humana por entrenador, reservas y modelo de pago. No simular servicios, disponibilidad o correcciones biomecánicas automáticas.
+
+
+## Entrega siguiente · Datos portables, favoritos y próxima práctica (30/10/2026)
+
+Alcance de esta entrega: completar la primera prioridad pendiente de la fase 2 y añadir favoritos y repetición de planes. El compañero y su IA deben continuar desde main actualizado, leer AGENTS.md y distinguir implementación, validación y publicación.
+
+### Funciones implementadas
+
+- Mi espacio personal: favoritos de las 12 lecciones principales y las 15 clases, con acceso desde Mi progreso. Las fichas permiten añadir o quitar favoritos.
+- Copia JSON v1: progreso, prácticas, sesiones terminadas, favoritos y preferencias del planificador. Se excluye la sesión activa para no sobrescribir cronómetros ni trasladar sesiones incompletas. Exportación manual e importación con validación, vista previa, confirmación y cancelación.
+- Combinación conservadora: unión de lecciones y favoritos; ante un mismo ID de sesión se conservan las notas locales; las prácticas idénticas entre copias no se duplican, pero se respeta el número de repeticiones idénticas que ya existía en cada historial. Conservación de las 30 sesiones más recientes con aviso previo si se exceden. Máximo 2000 prácticas y archivos de 2 MB; se rechaza la operación si se excede la capacidad.
+- Guardado con recuperación: si falla una escritura de la importación se intenta restaurar el estado anterior y se informa del resultado. Nunca se escriben claves arbitrarias incluidas en el archivo.
+- Próxima práctica: cargar los parámetros de la última sesión terminada y poder ajustarlos antes de entrenar. No sustituye una sesión en curso.
+
+### Contrato técnico para colaboración
+
+Código en dist/progress.js y dist/progress.css, cargado después de training.js. Clave nueva: padelx-favorites. Identificadores de catálogo v1: core:nivel-índice para lecciones principales y library:índice para la biblioteca. No reordenar cursos ni extraLessons sin migración de estos identificadores y de padelx-done. La copia usa app=padelx, version=1, exportedAt y data con completedLessons, practices, sessions, favorites y planSettings. Claves desconocidas se ignoran; valores inválidos provocan rechazo completo. Al importar se actualizan las vistas de progreso, prácticas, sesiones y favoritos sin recarga. Se mantienen las preferencias válidas locales del planificador; las de la copia se utilizan si aquí no había ninguna.
+
+PadelTraining añade prepare(settings) y refresh(); PadelProgress concentra normalización, copia, mezcla y guardado. No conectar cuentas ni introducir servicios de terceros como parte de esta entrega.
+
+### Validación y publicación
+
+Implementación terminada. Pasan la sintaxis de los cinco scripts, check.cjs, check-training.cjs (108 planes) y check-progress.cjs. Verificados: copia de ida y vuelta, esquema y límites, vista previa sin escrituras, cancelación, archivos seleccionados mientras se lee uno anterior, importación repetida sin duplicados añadidos, repeticiones legítimas conservadas, notas locales ante conflicto, límite de 30 sesiones, entradas inválidas, almacenamiento bloqueado, restauración tras fallo parcial, escape de texto, favoritos y protección de sesión activa. No hay herramienta de navegador disponible en esta sesión: revisión visual pendiente. El intento de apertura del repositorio de Sites vuelve a fallar con getaddrinfo() thread failed to start. GitHub se sincroniza por API; el Site conserva su identidad y accesos y sigue en versión 1 al preparar esta entrega. No se ha publicado esta versión.
+
+### Próximas propuestas pendientes
+
+Comparación de sesiones equivalentes y tendencias por ejercicio; selección de ejercicios para una próxima práctica personalizada; entrada por problema con reglas explícitas; pizarra táctica y casos de decisión revisados por entrenador. Después, según pruebas con usuarios: uso sin conexión, cuentas y sincronización. Esta entrega no incorpora estas propuestas.
