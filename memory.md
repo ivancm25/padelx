@@ -1,6 +1,6 @@
 # PadelX · memoria y plan de lanzamiento
 
-Actualizado: 02/11/2026. Documento vivo para decidir, construir y comprobar cada fase. Este plan propone prioridades; ninguna función futura se presenta como disponible hoy.
+Actualizado: 30/10/2026. Documento vivo para decidir, construir y comprobar cada fase. Este plan propone prioridades; ninguna función futura se presenta como disponible hoy.
 
 ## Punto de partida y objetivo
 
@@ -157,44 +157,29 @@ Comparación de sesiones equivalentes y tendencias por ejercicio; selección de 
 Seguimiento de esta entrega: https://github.com/ivancm25/padelx/pull/6. Consultar el estado de la PR para saber si está integrada; la publicación en Sites es independiente y continúa bloqueada en esta sesión.
 
 
-## Entrega · Comparación de prácticas equivalentes (02/11/2026)
+## Entrega — Comparador de prácticas equivalentes (02/11/2026)
 
-### Estado compartido revisado
+### Funciones y criterios de comparación
 
-La PR #6 está integrada en main (e40a7e80d749af87e01834957eecd1b105c3cfc3). Se ha consultado la cabeza, el árbol remoto completo y los archivos actuales antes de editar. Se mantienen las imágenes, el contenido y las aportaciones anteriores; no se incluyen datos de usuarios.
+Implementado en dist/trends.js y dist/trends.css, después de progress.js. El formulario exige nombre del ejercicio, dificultad (base/desarrollo/profundizar) y alimentación (cesta/peloteo/punto). No se asignan condiciones supuestas a las prácticas antiguas. El mismo golpe, ejercicio, dificultad y alimentación forman un grupo; al cambiar distancia, objetivo o material se debe usar otro nombre de ejercicio.
 
-### Implementación
+El comparador muestra las dos últimas prácticas equivalentes: intentos, cantidades, porcentajes y diferencia en puntos porcentuales para golpes válidos, red, fondo, decisiones y recuperación. Incluye las últimas diez prácticas del grupo. Ordena por fecha española validada y, el mismo día, por orden de registro; ese orden puede variar al combinar copias entre dispositivos. Los porcentajes son registros personales y no acreditan aprendizaje.
 
-- Sección «Compara lo que has practicado», accesible desde la página, con registro de práctica.
-- El registro añade nombre de ejercicio (máximo 80 caracteres), dificultad y alimentación: lanzamiento cómodo, peloteo cooperativo o punto con oposición. Si cambia objetivo, distancia o material, usar otro nombre.
-- Se comparan únicamente registros de la misma clase, ejercicio, dificultad y alimentación. Se muestran las dos últimas prácticas equivalentes, intentos y tasas de acierto, errores de red/fondo, decisiones y recuperación, con cambios en puntos porcentuales. Historial de las últimas diez del grupo.
-- Orden por fecha española válida; dentro de un mismo día se conserva el orden del historial. Este desempate puede cambiar al combinar copias de dispositivos diferentes.
-- Los registros antiguos siguen guardados y exportables, sin inventar condiciones ni incluirlos en comparaciones sin contexto.
-- Estados vacíos, datos dañados, almacenamiento bloqueado y texto escapado. Límite de 2000 prácticas al registrar, coherente con las copias.
-- No se añaden cuentas, rastreadores ni datos en servidor. No se interpreta un cambio porcentual como acreditación de aprendizaje.
+### Compatibilidad y colaboración
 
-### Contrato para el compañero y su IA
+Las nuevas prácticas añaden context={exercise,difficulty,feed} a padelx-practices. No hay nuevas claves ni datos de usuarios incorporados al código. Las copias exportadas pasan a version=2; se aceptan versiones 1 y 2. El contexto se valida y conserva en exportación, importación y combinación. Las prácticas antiguas permanecen en el historial fuera de las comparaciones. El formulario limita el historial a 2000 prácticas, como la importación.
 
-Código en dist/trends.js y dist/trends.css, cargado después de progress.js. API window.PadelTrends: normalizeContext, groups, compare, refresh y readContext. academy.js consulta readContext al guardar y el historial refresca la comparación. Se refresca también al importar y ante cambios de almacenamiento de otra pestaña.
+Archivos de esta entrega: dist/academy.js, dist/progress.js, dist/index.html, dist/trends.js, dist/trends.css, check-progress.cjs y check-trends.cjs. No reordenar el catálogo ni renombrar claves compartidas. GitHub main se consultó antes de editar: e40a7e80d749af87e01834957eecd1b105c3cfc3, con PR #6 integrada.
 
-La clave padelx-practices se conserva. Campo opcional nuevo: context = {exercise, difficulty, feed}. difficulty admite base/desarrollo/profundizar; feed admite cesta/peloteo/punto. No cambiar las enumeraciones sin migración. Los campos viejos permanecen iguales.
+### Validación y publicación
 
-Las exportaciones pasan a version=2 para que una aplicación antigua rechace la copia antes de descartar el contexto. Se importan versiones 1 y 2. progress.js valida y conserva context, y rechaza la copia completa si el contexto presente es inválido. No se toca la sesión activa. Actualizar clientes antiguos antes de importar copias v2.
+Pasan sintaxis de todos los scripts, check.cjs, check-training.cjs (108 planes), check-progress.cjs y check-trends.cjs. Las pruebas nuevas comprueban cálculo con distintos volúmenes, separación de golpe/ejercicio/dificultad/alimentación, fechas inválidas, datos antiguos, ida y vuelta v1/v2, combinación idempotente, escape de texto, formulario y fallo de guardado.
 
-### Verificación y límites de esta entrega
+Revisión visual pendiente: el servidor local arrancó, pero la herramienta del navegador no pudo vincular la pestaña con la sesión. El flujo oficial de apertura de Sites, con credencial renovada, falla con getaddrinfo() thread failed to start al conectar al remoto git.chatgpt-team.site. No se ha desplegado esta entrega. Sites sigue en versión 1 según consulta del 02/11/2026; conserva identidad y permisos. No confundir integración en GitHub con publicación.
 
-Antes de perderse el entorno Windows pasaron check.cjs, check-training.cjs (108 planes), check-progress.cjs y sintaxis de trends.js. La conexión se interrumpió al abrir la vista previa: no se completó QA visual en móvil/escritorio ni el flujo de Sites.
+### Próximas prioridades
 
-Se recuperó el código a través del conector. Sobre el código recuperado se comprobaron la sintaxis de los seis scripts y 26 casos ejecutados con DOM/almacenamiento simulados: grupos y fechas, tasas y puntos porcentuales, separación por contexto, cantidades inválidas, compatibilidad v1/v2, copia de ida/vuelta, versión futura, importación idempotente, escape, almacenamiento dañado/bloqueado y guardado real desde el manejador del formulario. Se conserva el runner reproducible en check-trends.cjs; ejecutar node check-trends.cjs junto con las tres suites anteriores al recuperar el entorno.
-
-La revisión visual y la publicación quedan pendientes. El Site consultado conserva versión 1 y los accesos existentes. No confundir esta entrega en GitHub con un despliegue. Reanudar el flujo oficial de Sites con su misma identidad cuando vuelva el entorno de ejecución.
-
-### Orden propuesto para continuar
-
-1. Recuperar el entorno, ejecutar las cuatro suites, revisar móvil/escritorio y publicar las entregas acumuladas en el Site existente.
-2. Probar con jugadores que entiendan la agrupación y puedan repetir condiciones equivalentes.
-3. Preparar selección personalizada de ejercicios para la próxima sesión, preservando una sesión activa.
-4. Entrada por problema con enlaces a contenido existente y revisión de entrenador antes de añadir consejos nuevos.
-5. Pizarra táctica y casos de decisión revisados. Cuentas, sincronización y servicios reales se mantienen sujetos a validación del piloto.
-
-La comparación de esta entrega queda implementada; el piloto con usuarios y la validación editorial humana no se dan por completados.
+1. Completar revisión visual móvil/escritorio y publicar desde un entorno con conexión operativa a Sites.
+2. Probar el comparador con registros ficticios y jugadores; valorar si conviene facilitar la repetición de condiciones.
+3. Preparar selección personalizada de ejercicios para la próxima práctica.
+4. Después: entrada por problema con reglas explícitas y pizarra táctica, con revisión de entrenador para contenido nuevo. Uso sin conexión y cuentas quedan sujetos a necesidades observadas.

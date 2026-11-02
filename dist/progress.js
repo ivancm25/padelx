@@ -1,4 +1,4 @@
-/* Copias personales v2 (importa v1 y v2). Solo se escriben las claves declaradas; nunca una sesión activa. */
+/* Copias personales v1. Solo se escriben las claves declaradas; nunca una sesión activa. */
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
@@ -118,3 +118,4 @@
   window.PadelProgress={parseBackup,normalize,mergeData,writeMerged,readData,backup,refresh,toggleFavorite,catalog};
   refresh();
 })();
+

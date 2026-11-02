@@ -47,3 +47,4 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert');
   assert.equal(training.prepare(settings),true);$('#startCourt').onclick();assert.equal(training.prepare({...settings,minutes:20}),false);
   console.log('OK: copia ida/vuelta, esquema, límites, combinación idempotente, duplicados legítimos, notas locales, recuperación parcial, favoritos, vista previa, cancelación, archivos concurrentes, descarga y protección de sesión activa');
 })().catch(error=>{console.error(error);process.exitCode=1;});
+
