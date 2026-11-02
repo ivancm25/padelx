@@ -155,3 +155,31 @@ Implementación terminada. Pasan la sintaxis de los cinco scripts, check.cjs, ch
 Comparación de sesiones equivalentes y tendencias por ejercicio; selección de ejercicios para una próxima práctica personalizada; entrada por problema con reglas explícitas; pizarra táctica y casos de decisión revisados por entrenador. Después, según pruebas con usuarios: uso sin conexión, cuentas y sincronización. Esta entrega no incorpora estas propuestas.
 
 Seguimiento de esta entrega: https://github.com/ivancm25/padelx/pull/6. Consultar el estado de la PR para saber si está integrada; la publicación en Sites es independiente y continúa bloqueada en esta sesión.
+
+
+## Entrega — Comparador de prácticas equivalentes (02/11/2026)
+
+### Funciones y criterios de comparación
+
+Implementado en dist/trends.js y dist/trends.css, después de progress.js. El formulario exige nombre del ejercicio, dificultad (base/desarrollo/profundizar) y alimentación (cesta/peloteo/punto). No se asignan condiciones supuestas a las prácticas antiguas. El mismo golpe, ejercicio, dificultad y alimentación forman un grupo; al cambiar distancia, objetivo o material se debe usar otro nombre de ejercicio.
+
+El comparador muestra las dos últimas prácticas equivalentes: intentos, cantidades, porcentajes y diferencia en puntos porcentuales para golpes válidos, red, fondo, decisiones y recuperación. Incluye las últimas diez prácticas del grupo. Ordena por fecha española validada y, el mismo día, por orden de registro; ese orden puede variar al combinar copias entre dispositivos. Los porcentajes son registros personales y no acreditan aprendizaje.
+
+### Compatibilidad y colaboración
+
+Las nuevas prácticas añaden context={exercise,difficulty,feed} a padelx-practices. No hay nuevas claves ni datos de usuarios incorporados al código. Las copias exportadas pasan a version=2; se aceptan versiones 1 y 2. El contexto se valida y conserva en exportación, importación y combinación. Las prácticas antiguas permanecen en el historial fuera de las comparaciones. El formulario limita el historial a 2000 prácticas, como la importación.
+
+Archivos de esta entrega: dist/academy.js, dist/progress.js, dist/index.html, dist/trends.js, dist/trends.css, check-progress.cjs y check-trends.cjs. No reordenar el catálogo ni renombrar claves compartidas. GitHub main se consultó antes de editar: e40a7e80d749af87e01834957eecd1b105c3cfc3, con PR #6 integrada.
+
+### Validación y publicación
+
+Pasan sintaxis de todos los scripts, check.cjs, check-training.cjs (108 planes), check-progress.cjs y check-trends.cjs. Las pruebas nuevas comprueban cálculo con distintos volúmenes, separación de golpe/ejercicio/dificultad/alimentación, fechas inválidas, datos antiguos, ida y vuelta v1/v2, combinación idempotente, escape de texto, formulario y fallo de guardado.
+
+Revisión visual pendiente: el servidor local arrancó, pero la herramienta del navegador no pudo vincular la pestaña con la sesión. El flujo oficial de apertura de Sites, con credencial renovada, falla con getaddrinfo() thread failed to start al conectar al remoto git.chatgpt-team.site. No se ha desplegado esta entrega. Sites sigue en versión 1 según consulta del 02/11/2026; conserva identidad y permisos. No confundir integración en GitHub con publicación.
+
+### Próximas prioridades
+
+1. Completar revisión visual móvil/escritorio y publicar desde un entorno con conexión operativa a Sites.
+2. Probar el comparador con registros ficticios y jugadores; valorar si conviene facilitar la repetición de condiciones.
+3. Preparar selección personalizada de ejercicios para la próxima práctica.
+4. Después: entrada por problema con reglas explícitas y pizarra táctica, con revisión de entrenador para contenido nuevo. Uso sin conexión y cuentas quedan sujetos a necesidades observadas.
