@@ -55,3 +55,8 @@ Cuatro rutas por objetivos, sesiones de 20/40/60 minutos para 1/2/4 jugadores y 
 ## Datos portables y favoritos
 
 Mi espacio permite guardar las 27 lecciones, descargar una copia JSON y combinarla en otro navegador con vista previa. Conserva la sesión en curso local y permite cargar el plan de la última sesión terminada. El formato v1 y la coordinación entre colaboradores se documentan en memory.md. Ejecuta también `node --check dist/progress.js` y `node check-progress.cjs`.
+
+
+## Comparar prácticas
+
+El comparador agrupa prácticas por golpe, ejercicio, dificultad y alimentación. Muestra cantidades, porcentajes y cambios en puntos porcentuales. Las copias JSON v2 conservan el contexto y aceptan copias v1. Ejecuta también `node check-trends.cjs`. Alcance, límites, siguientes prioridades y publicación: memory.md, entrega del 02/11/2026.
