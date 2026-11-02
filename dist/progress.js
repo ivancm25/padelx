@@ -1,4 +1,4 @@
-/* Copias personales v1. Solo se escriben las claves declaradas; nunca una sesión activa. */
+/* Copias personales v2 (importa v1 y v2). Solo se escriben las claves declaradas; nunca una sesión activa. */
 (function () {
   'use strict';
   const $ = s => document.querySelector(s);
@@ -26,7 +26,8 @@
     if(!object(value)||!shots.has(value.shot)||!text(value.date,40)||!value.date||!integer(value.attempts,1,1000)||!['success','net','out'].every(k=>integer(value[k],0,value.attempts))||value.success+value.net+value.out>value.attempts)fail('Hay una práctica con datos inválidos.');
     const decisions=value.decisions??0,recovery=value.recovery??0;
     if(!integer(decisions,0,value.attempts)||!integer(recovery,0,value.attempts))fail('Las decisiones o recuperaciones no pueden superar los intentos.');
-    return {shot:value.shot,date:value.date,attempts:value.attempts,success:value.success,net:value.net,out:value.out,decisions,recovery};
+    const context=value.context===undefined?undefined:window.PadelTrends.normalizeContext(value.context);
+    return {shot:value.shot,date:value.date,attempts:value.attempts,success:value.success,net:value.net,out:value.out,decisions,recovery,...(context?{context}:{})};
   }
   function session(value){
     if(!object(value)||!text(value.id,100)||!value.id||!text(value.at,40)||!Number.isFinite(Date.parse(value.at))||!text(value.note,240)||!['repetir','mejor','dificil'].includes(value.feeling))fail('Hay una sesión con datos inválidos.');
@@ -43,14 +44,14 @@
   function parseBackup(input){
     if(typeof input!=='string'||new Blob([input]).size>maxBytes)fail('Selecciona una copia JSON de PadelX de hasta 2 MB.');
     let file;try{file=JSON.parse(input);}catch{fail('El archivo no contiene JSON válido.');}
-    if(!object(file)||file.app!=='padelx'||file.version!==1||!text(file.exportedAt,40)||!Number.isFinite(Date.parse(file.exportedAt)))fail('No es una copia de PadelX compatible (versión 1).');
+    if(!object(file)||file.app!=='padelx'||![1,2].includes(file.version)||!text(file.exportedAt,40)||!Number.isFinite(Date.parse(file.exportedAt)))fail('No es una copia de PadelX compatible (versiones 1 y 2).');
     return normalize(file.data);
   }
   function readData(){
     const raw={};for(const [name,key] of Object.entries(keys)){const saved=localStorage.getItem(key);try{raw[name]=saved===null?(name==='planSettings'?null:[]):JSON.parse(saved);}catch{fail('Hay datos locales dañados. Conserva este navegador y revisa el almacenamiento antes de importar.');}}
     return normalize(raw);
   }
-  function backup(data){return JSON.stringify({app:'padelx',version:1,exportedAt:new Date().toISOString(),data:normalize(data)},null,2);}
+  function backup(data){return JSON.stringify({app:'padelx',version:2,exportedAt:new Date().toISOString(),data:normalize(data)},null,2);}
   function mergeData(current,incoming){
     const local=normalize(current),other=normalize(incoming);
     const practices=local.practices.slice(),unmatched=new Map();

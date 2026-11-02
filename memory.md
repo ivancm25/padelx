@@ -1,6 +1,6 @@
 # PadelX · memoria y plan de lanzamiento
 
-Actualizado: 30/10/2026. Documento vivo para decidir, construir y comprobar cada fase. Este plan propone prioridades; ninguna función futura se presenta como disponible hoy.
+Actualizado: 02/11/2026. Documento vivo para decidir, construir y comprobar cada fase. Este plan propone prioridades; ninguna función futura se presenta como disponible hoy.
 
 ## Punto de partida y objetivo
 
@@ -155,3 +155,46 @@ Implementación terminada. Pasan la sintaxis de los cinco scripts, check.cjs, ch
 Comparación de sesiones equivalentes y tendencias por ejercicio; selección de ejercicios para una próxima práctica personalizada; entrada por problema con reglas explícitas; pizarra táctica y casos de decisión revisados por entrenador. Después, según pruebas con usuarios: uso sin conexión, cuentas y sincronización. Esta entrega no incorpora estas propuestas.
 
 Seguimiento de esta entrega: https://github.com/ivancm25/padelx/pull/6. Consultar el estado de la PR para saber si está integrada; la publicación en Sites es independiente y continúa bloqueada en esta sesión.
+
+
+## Entrega · Comparación de prácticas equivalentes (02/11/2026)
+
+### Estado compartido revisado
+
+La PR #6 está integrada en main (e40a7e80d749af87e01834957eecd1b105c3cfc3). Se ha consultado la cabeza, el árbol remoto completo y los archivos actuales antes de editar. Se mantienen las imágenes, el contenido y las aportaciones anteriores; no se incluyen datos de usuarios.
+
+### Implementación
+
+- Sección «Compara lo que has practicado», accesible desde la página, con registro de práctica.
+- El registro añade nombre de ejercicio (máximo 80 caracteres), dificultad y alimentación: lanzamiento cómodo, peloteo cooperativo o punto con oposición. Si cambia objetivo, distancia o material, usar otro nombre.
+- Se comparan únicamente registros de la misma clase, ejercicio, dificultad y alimentación. Se muestran las dos últimas prácticas equivalentes, intentos y tasas de acierto, errores de red/fondo, decisiones y recuperación, con cambios en puntos porcentuales. Historial de las últimas diez del grupo.
+- Orden por fecha española válida; dentro de un mismo día se conserva el orden del historial. Este desempate puede cambiar al combinar copias de dispositivos diferentes.
+- Los registros antiguos siguen guardados y exportables, sin inventar condiciones ni incluirlos en comparaciones sin contexto.
+- Estados vacíos, datos dañados, almacenamiento bloqueado y texto escapado. Límite de 2000 prácticas al registrar, coherente con las copias.
+- No se añaden cuentas, rastreadores ni datos en servidor. No se interpreta un cambio porcentual como acreditación de aprendizaje.
+
+### Contrato para el compañero y su IA
+
+Código en dist/trends.js y dist/trends.css, cargado después de progress.js. API window.PadelTrends: normalizeContext, groups, compare, refresh y readContext. academy.js consulta readContext al guardar y el historial refresca la comparación. Se refresca también al importar y ante cambios de almacenamiento de otra pestaña.
+
+La clave padelx-practices se conserva. Campo opcional nuevo: context = {exercise, difficulty, feed}. difficulty admite base/desarrollo/profundizar; feed admite cesta/peloteo/punto. No cambiar las enumeraciones sin migración. Los campos viejos permanecen iguales.
+
+Las exportaciones pasan a version=2 para que una aplicación antigua rechace la copia antes de descartar el contexto. Se importan versiones 1 y 2. progress.js valida y conserva context, y rechaza la copia completa si el contexto presente es inválido. No se toca la sesión activa. Actualizar clientes antiguos antes de importar copias v2.
+
+### Verificación y límites de esta entrega
+
+Antes de perderse el entorno Windows pasaron check.cjs, check-training.cjs (108 planes), check-progress.cjs y sintaxis de trends.js. La conexión se interrumpió al abrir la vista previa: no se completó QA visual en móvil/escritorio ni el flujo de Sites.
+
+Se recuperó el código a través del conector. Sobre el código recuperado se comprobaron la sintaxis de los seis scripts y 26 casos ejecutados con DOM/almacenamiento simulados: grupos y fechas, tasas y puntos porcentuales, separación por contexto, cantidades inválidas, compatibilidad v1/v2, copia de ida/vuelta, versión futura, importación idempotente, escape, almacenamiento dañado/bloqueado y guardado real desde el manejador del formulario. Se conserva el runner reproducible en check-trends.cjs; ejecutar node check-trends.cjs junto con las tres suites anteriores al recuperar el entorno.
+
+La revisión visual y la publicación quedan pendientes. El Site consultado conserva versión 1 y los accesos existentes. No confundir esta entrega en GitHub con un despliegue. Reanudar el flujo oficial de Sites con su misma identidad cuando vuelva el entorno de ejecución.
+
+### Orden propuesto para continuar
+
+1. Recuperar el entorno, ejecutar las cuatro suites, revisar móvil/escritorio y publicar las entregas acumuladas en el Site existente.
+2. Probar con jugadores que entiendan la agrupación y puedan repetir condiciones equivalentes.
+3. Preparar selección personalizada de ejercicios para la próxima sesión, preservando una sesión activa.
+4. Entrada por problema con enlaces a contenido existente y revisión de entrenador antes de añadir consejos nuevos.
+5. Pizarra táctica y casos de decisión revisados. Cuentas, sincronización y servicios reales se mantienen sujetos a validación del piloto.
+
+La comparación de esta entrega queda implementada; el piloto con usuarios y la validación editorial humana no se dan por completados.

@@ -55,3 +55,12 @@ Cuatro rutas por objetivos, sesiones de 20/40/60 minutos para 1/2/4 jugadores y 
 ## Datos portables y favoritos
 
 Mi espacio permite guardar las 27 lecciones, descargar una copia JSON y combinarla en otro navegador con vista previa. Conserva la sesión en curso local y permite cargar el plan de la última sesión terminada. El formato v1 y la coordinación entre colaboradores se documentan en memory.md. Ejecuta también `node --check dist/progress.js` y `node check-progress.cjs`.
+
+
+## Comparar prácticas equivalentes
+
+La sección «Compara lo que has practicado» agrupa registros por clase, nombre de ejercicio, dificultad y alimentación. Compara tasas con sus intentos y muestra cambios en puntos porcentuales. Los registros antiguos se conservan fuera de la comparación cuando no tienen contexto.
+
+Las copias nuevas usan formato v2 e incluyen el contexto; se siguen importando copias v1. Actualiza PadelX antes de importar una copia v2 en otro dispositivo. Contrato y estado de publicación en memory.md.
+
+Comprobar también con `node --check dist/trends.js` y `node check-trends.cjs`.
